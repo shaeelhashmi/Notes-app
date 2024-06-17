@@ -2,6 +2,7 @@ import googleStrategy from 'passport-google-oauth2' ;
 import passport from 'passport';
 import localStrategy from 'passport-local';
 import dotenv from 'dotenv';
+import { AddGoogleUser,verify } from './Mongoose.js';
 dotenv.config();
 const LocalStrategy=localStrategy.Strategy;
 const GoogleStrategy=googleStrategy.Strategy;
@@ -14,9 +15,10 @@ function redirectLogin(req, res, next) {
     req.user ? next() : res.sendStatus(401);
     }
     passport.use(new LocalStrategy(
-    function(username, password, done) {
-    // Replace this with your actual user verification logic
-    if (username === 'testuser' && password === 'testpassword') {
+    async function(username, password, done,res) {
+    const data=await verify(username,password,res);
+    console.log(data);
+    if (data) {
     return done(null, { username: 'testuser' });
     } else {
     return done(null, false, { message: 'Incorrect username or password.' });

@@ -34,7 +34,7 @@ const CreateUser =async (username, password,res) => {
    await User.save();
    return res.status(200).json({message :"User Created"});
 }
-const verify=async (username,password)=>{
+const verify=async (username,password,res)=>{
     const data=await UserData.findOne({username:username});
     if(data){
         const a=await bycrypt.compare(password, data.password);
@@ -51,9 +51,11 @@ else{
 }
 const CreateUniqueName=async (username)=>{
     let data=await UserData.findOne({username:username});
+    let i=0;
     while(data){
-        username=username+"1";
+        username=username+toString(i);
         data=await UserData.findOne({username:username});
+        i++;
     }
     return username;
 }
