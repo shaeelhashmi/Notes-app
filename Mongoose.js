@@ -1,5 +1,15 @@
 import mongoose from "mongoose";
+import  MongoDBStore  from "connect-mongodb-session";
 import bycrypt from "bcryptjs";
+import session from 'express-session';
+import dotenv from "dotenv";
+dotenv.config();
+const store=MongoDBStore(session);
+const storage=new store({
+    uri:process.env.ConnectionPort,
+    collection:"sessions"
+
+});
 const UserSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -80,4 +90,4 @@ const AddGoogleUser=async (username,email)=>{
 }
 export default CreateUser;
 export {verify};
-export {AddGoogleUser};
+export {AddGoogleUser,storage};

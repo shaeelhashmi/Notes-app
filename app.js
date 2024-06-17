@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import path from "path";
 import dotenv from 'dotenv';
 import { fileURLToPath } from "url";
-import CreateUser from './Mongoose.js';
+import CreateUser,{storage} from './Mongoose.js';
 import mongoose from 'mongoose';
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
@@ -17,7 +17,8 @@ app.use(session({
 secret: 'keyboard cat',
 resave: false,
 saveUninitialized: true,
-cookie: { secure: false,maxAge: 60000}
+cookie: { secure: false,maxAge: 60000},
+store: storage
 }))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -40,16 +41,13 @@ app.get('/login',redirectLogin, (req, res) => {
 app.get('/signup',redirectLogin, (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'))
   });
-app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile'] }));
-  
   app.get('/auth/google/callback',
   passport.authenticate('google', { scope: ['profile','email']  }),
   function(req, res) {
   // Successful authentication, redirect home.
   res.redirect('/login4');
   });
-  app.post('/login', (req, res, next) => {
+  app.post('/login',redirectLogin, (req, res, next) => {
     console.log(req.body);
     passport.authenticate('local', function (err, user, info) {
         if (err) {
@@ -64,11 +62,15 @@ app.get('/auth/google',
             }
             return res.status(200).json({ message: "Authenticated", user: user.username });
         });
-    })(req, res, next);
+    })(req, res, next),(req,res)=>{
+      res.redirect('/login4')
+    }
 });
 //Registering user
 app.post("/register", (req, res) => {
   CreateUser(req.body.username,req.body.password,res);
+},(req,res)=>{
+  res.redirect('/login4')
 });
 app.listen(3000, async() => {
   await mongoose.connect(process.env.ConnectionPort)
