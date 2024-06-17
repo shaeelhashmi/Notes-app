@@ -22,7 +22,7 @@ const UserSchema = new mongoose.Schema({
 const UserData = mongoose.model("UserData", UserSchema);
 const CreateUser =async (username, password,res) => {
     if(await UserData.findOne({username: username})){
-       return res.status(400).json({error :"Username already exists"});
+       return res.status(400).json({message :"Username already exists"});
     }
     const salt = await bycrypt.genSalt(10);
     password = await bycrypt.hash(password, salt);
@@ -59,7 +59,7 @@ const CreateUniqueName=async (username)=>{
     }
     return username;
 }
-const AddGoogleUser=async (username,email,res)=>{
+const AddGoogleUser=async (username,email)=>{
     const Email=await UserData.findOne({email:email})
     if(!Email)
         {

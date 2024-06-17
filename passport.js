@@ -32,6 +32,8 @@ function redirectLogin(req, res, next) {
     passReqToCallback   : true
     },
     function(request, accessToken, refreshToken, profile, done) {
+      console.log(profile.displayName,profile.email)
+    AddGoogleUser(profile.displayName,profile.email);
     done(null, profile)
     }
     ));
