@@ -5,6 +5,8 @@ import bodyParser from 'body-parser';
 import path from "path";
 import dotenv from 'dotenv';
 import { fileURLToPath } from "url";
+import CreateUser from './Mongoose.js';
+import mongoose from 'mongoose';
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -64,7 +66,11 @@ app.get('/auth/google',
         });
     })(req, res, next);
 });
-
-app.listen(3000, () => {
+//Registering user
+app.post("/register", (req, res) => {
+  CreateUser(req.body.username,req.body.password,res);
+});
+app.listen(3000, async() => {
+  await mongoose.connect(process.env.ConnectionPort)
 console.log('Server is running on port 3000')
 });

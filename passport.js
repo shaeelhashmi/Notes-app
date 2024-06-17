@@ -14,8 +14,7 @@ function redirectLogin(req, res, next) {
     req.user ? next() : res.sendStatus(401);
     }
     passport.use(new LocalStrategy(
-    function(username, password, done,res) {
-    console.log("HElllo")
+    function(username, password, done) {
     // Replace this with your actual user verification logic
     if (username === 'testuser' && password === 'testpassword') {
     return done(null, { username: 'testuser' });
