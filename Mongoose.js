@@ -37,6 +37,9 @@ const CreateUser =async (username, password,res) => {
 const verify=async (username,password,res)=>{
     const data=await UserData.findOne({username:username});
     if(data){
+        if(data.password==null){
+            return false;
+        }
         const a=await bycrypt.compare(password, data.password);
         if(a){
         return true;
@@ -46,7 +49,7 @@ const verify=async (username,password,res)=>{
     }
 }
 else{
-    return res.status(400).json({error :"Invalid credentials"});
+    return false;
 }
 }
 const CreateUniqueName=async (username)=>{
@@ -60,6 +63,9 @@ const CreateUniqueName=async (username)=>{
     return username;
 }
 const AddGoogleUser=async (username,email)=>{
+    username=username.split(" ").join("");
+    username=username.toLowerCase();
+    console.log(username);
     const Email=await UserData.findOne({email:email})
     if(!Email)
         {

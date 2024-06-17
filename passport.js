@@ -17,7 +17,6 @@ function redirectLogin(req, res, next) {
     passport.use(new LocalStrategy(
     async function(username, password, done,res) {
     const data=await verify(username,password,res);
-    console.log(data);
     if (data) {
     return done(null, { username: 'testuser' });
     } else {
