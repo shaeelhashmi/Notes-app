@@ -14,7 +14,7 @@ const app = express();
 app.use(express.static('./dist'));
 app.set('trust proxy', 1) // trust first proxy
 app.use(session({
-secret: 'keyboard cat',
+secret: process.env.Secret,
 resave: false,
 saveUninitialized: true,
 cookie: { secure: false,maxAge: 6000000},
@@ -25,12 +25,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/login4",isLoggedIn, (req, res) => {
-res.status(200).json({ message:"Hello ", user: req.user.displayName})
+app.get("/",isLoggedIn,()=>{
+  console.log("object")
+}, (req, res) => {
+return res.sendFile(path.join(__dirname, 'dist/index.html'))
 })
 app.get("/logout", (req, res) => {
 req.session.destroy();
-res.send("Logged out")
+res.send("Logged out");
 })
 app.get('/failure', (req, res) => {
 res.status(200).json("faailed to authenticate")
@@ -45,9 +47,9 @@ app.get('/signup',redirectLogin, (req, res) => {
   passport.authenticate('google', { scope: ['profile','email']  }),
   function(req, res) {
   // Successful authentication, redirect home.
-  res.redirect('/login4');
+  res.redirect('/');
   });
-  app.post('/login',redirectLogin, (req, res, next) => {
+  app.post('/login', (req, res, next) => {
     console.log(req.body);
     passport.authenticate('local', function (err, user, info) {
         if (err) {
@@ -62,15 +64,19 @@ app.get('/signup',redirectLogin, (req, res) => {
             }
             return res.status(200).json({ message: "Authenticated", user: user.username });
         });
-    })(req, res, next),(req,res)=>{
-      res.redirect('/login4')
-    }
+    })(req, res, next)
 });
+app.get("/checklogin",(req,res)=>{
+  console.log(req.user.username||req.user)
+  if(!req.user&&!req.user.username)
+    {
+      res.status(500).send(req.user.username||req.user)
+    }
+  res.status(200).send(req.user.username||req.user)
+})
 //Registering user
 app.post("/register", (req, res) => {
   CreateUser(req.body.username,req.body.password,res);
-},(req,res)=>{
-  res.redirect('/login4')
 });
 app.listen(3000, async() => {
   await mongoose.connect(process.env.ConnectionPort)

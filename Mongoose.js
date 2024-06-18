@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema({
         required: false
     },
     Notes: {
-        type: Array,
+        type: [{ title: String, content: String,timeOfCompletion:Date,category:String }],
         required: false
     }
 });
