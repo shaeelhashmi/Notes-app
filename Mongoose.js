@@ -35,7 +35,7 @@ const UserData = mongoose.model("UserData", UserSchema);
 
 const CreateUser = async (username, password, res) => {
     if (await UserData.findOne({ username: username })) {
-        return res.status(400).json({ message: "Username already exists" });
+        return res.status(200).json({ message: "Username already exists" });
     }
     const salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt);
@@ -91,6 +91,14 @@ const AddGoogleUser = async (username, email) => {
         await User.save();
     }
 };
+const AddNote = async (username, title, content,timeOfCompletion,category) => {
+    const data=await UserData.findOne({username:username});
+    if(data)
+    {
+        data.Notes.push({title:title,content:content,timeOfCompletion:timeOfCompletion,category:category});
+        await data.save();
+    }
+}
 const getName= async (email) => {
     const data = await UserData.findOne({email:email});
     return data.username;

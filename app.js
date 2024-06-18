@@ -66,7 +66,7 @@ app.get('/signup',redirectLogin, (req, res) => {
         });
     })(req, res, next)
 });
-app.get("/checklogin",(req,res)=>{
+app.post("/checklogin",(req,res)=>{
   try
   {
   if(!req.user&&!req.user.username)
@@ -79,6 +79,11 @@ app.get("/checklogin",(req,res)=>{
   {
     res.status(500).send("Not logged in")
   }
+})
+app.post("/addnote",(req,res)=>{
+  console.log(req.body);
+  const user=req.user.username||req.user;
+  res.status(200).json({message:"Note added"})
 })
 //Registering user
 app.post("/register", (req, res) => {
