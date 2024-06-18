@@ -17,7 +17,7 @@ app.use(session({
 secret: 'keyboard cat',
 resave: false,
 saveUninitialized: true,
-cookie: { secure: false,maxAge: 60000},
+cookie: { secure: false,maxAge: 6000000},
 store: storage
 }))
 app.use(bodyParser.json());
