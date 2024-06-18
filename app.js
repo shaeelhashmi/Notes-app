@@ -1,4 +1,4 @@
-import passport,{redirectLogin,isLoggedIn} from './passport.js';
+import passport,{redirectLogin} from './passport.js';
 import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
@@ -25,12 +25,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/",isLoggedIn,()=>{
+app.get("/",()=>{
   console.log("object")
 }, (req, res) => {
 return res.sendFile(path.join(__dirname, 'dist/index.html'))
 })
-app.get("/logout", (req, res) => {
+app.post("/logout", (req, res) => {
 req.session.destroy();
 res.send("Logged out");
 })
@@ -67,12 +67,18 @@ app.get('/signup',redirectLogin, (req, res) => {
     })(req, res, next)
 });
 app.get("/checklogin",(req,res)=>{
-  console.log(req.user.username||req.user)
+  try
+  {
   if(!req.user&&!req.user.username)
     {
-      res.status(500).send(req.user.username||req.user)
+      res.status(500).send("Not logged in")
     }
   res.status(200).send(req.user.username||req.user)
+  }
+  catch(e)
+  {
+    res.status(500).send("Not logged in")
+  }
 })
 //Registering user
 app.post("/register", (req, res) => {

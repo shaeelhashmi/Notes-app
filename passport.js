@@ -11,14 +11,6 @@ function redirectLogin(req, res, next) {
     {return res.redirect('/')}
     next();
     }
-    function isLoggedIn(req, res, next) {
-      console.log(req.user);
-      console.log("Hello")
-      if (!req.user) {
-        return res.redirect('/login');
-      }
-      next();
-  }
     passport.use(new LocalStrategy(
     async function(username, password, done,res,req) {
     const data=await verify(username,password,res);
@@ -48,5 +40,5 @@ function redirectLogin(req, res, next) {
     passport.deserializeUser(function(user, done) {
     done(null, user);
     })
-      export {redirectLogin,isLoggedIn} 
+      export {redirectLogin} 
     export default passport;
