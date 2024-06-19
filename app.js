@@ -73,7 +73,7 @@ app.post("/checklogin",(req,res)=>{
     {
       res.status(500).send("Not logged in")
     }
-  res.status(200).send(req.user.username||req.user)
+  res.status(200).send(req.user)
   }
   catch(e)
   {
