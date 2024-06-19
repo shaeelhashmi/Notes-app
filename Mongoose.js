@@ -95,13 +95,16 @@ const AddNote = async (username, title, content,timeOfCompletion,category) => {
     const data=await UserData.findOne({username:username});
     if(data)
     {
-        data.Notes.push({title:title,content:content,timeOfCompletion:timeOfCompletion,category:category});
-        await data.save();
+       await UserData.updateOne({username:username},{$push:{Notes:{title:title,content:content,timeOfCompletion:timeOfCompletion,category:category}}});
     }
 }
 const getName= async (email) => {
     const data = await UserData.findOne({email:email});
     return data.username;
 }
+const getUserNote=async (username)=>{
+    const data=await UserData.findOne({username:username});
+    return data.Notes;
+}
 export default CreateUser;
-export { verify, AddGoogleUser, storage, getName};
+export { verify, AddGoogleUser, storage, getName,AddNote,getUserNote};

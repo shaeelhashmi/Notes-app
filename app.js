@@ -5,8 +5,9 @@ import bodyParser from 'body-parser';
 import path from "path";
 import dotenv from 'dotenv';
 import { fileURLToPath } from "url";
-import CreateUser,{storage} from './Mongoose.js';
+import CreateUser,{storage,AddNote,getUserNote} from './Mongoose.js';
 import mongoose from 'mongoose';
+import { get } from 'http';
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -82,13 +83,20 @@ app.post("/checklogin",(req,res)=>{
 })
 app.post("/addnote",(req,res)=>{
   console.log(req.body);
-  const user=req.user.username||req.user;
+  const user=req.user;
+  const date=new Date(req.body.CompletionDate);
+  AddNote(user.username,req.body.title,req.body.description,date,req.body.category)
   res.status(200).json({message:"Note added"})
 })
 //Registering user
 app.post("/register", (req, res) => {
   CreateUser(req.body.username,req.body.password,res);
 });
+app.get("/userdata",async (req,res)=>{
+  const data=await getUserNote(req.user.username);
+  console.log(data);
+  return res.status(200).json(data);
+})
 app.listen(3000, async() => {
   await mongoose.connect(process.env.ConnectionPort)
 console.log('Server is running on port 3000')
