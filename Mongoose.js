@@ -4,7 +4,17 @@ import bcrypt from "bcryptjs";
 import session from 'express-session';
 import dotenv from "dotenv";
 dotenv.config();
+const NoteSchema = new mongoose.Schema({
+    title: String,
+    content: String,
+    timeOfCompletion: Date
+});
+const Category=new mongoose.Schema({
+    category:
+    {type:String},
+    Notes:[NoteSchema]
 
+});
 const store = MongoDBStore(session);
 const storage = new store({
     uri: process.env.ConnectionPort,
@@ -26,11 +36,10 @@ const UserSchema = new mongoose.Schema({
         required: false
     },
     Notes: {
-        type: [{ title: String, content: String,timeOfCompletion:Date,category:String }],
-        required: false
+       type: [Category],
+        
     }
 });
-
 const UserData = mongoose.model("UserData", UserSchema);
 
 const CreateUser = async (username, password, res) => {
@@ -90,14 +99,39 @@ const AddGoogleUser = async (username, email) => {
         });
         await User.save();
     }
-};
-const AddNote = async (username, title, content,timeOfCompletion,category) => {
-    const data=await UserData.findOne({username:username});
-    if(data)
-    {
-       await UserData.updateOne({username:username},{$push:{Notes:{title:title,content:content,timeOfCompletion:timeOfCompletion,category:category}}});
+};const AddNote = async (username, title, content, timeOfCompletion, category) => {
+    try {
+        const newNote = {
+            title: title,
+            content: content,
+            timeOfCompletion: timeOfCompletion
+        };
+
+        const user = await UserData.findOne({ username: username });
+        if (!user) {
+            console.log(`User with username ${username} not found.`);
+            return;
+        }
+
+        const categoryIndex = user.Notes.findIndex(cat => cat.category === category);
+        if (categoryIndex !== -1) {
+            // Category exists, add the note to the existing category
+            user.Notes[categoryIndex].Notes.push(newNote);
+        } else {
+            // Category does not exist, create a new category with the note
+            user.Notes.push({
+                category: category,
+                Notes: [newNote]
+            });
+        }
+
+        await user.save();
+        console.log(`Note added to user ${username} in category ${category}.`);
+    } catch (error) {
+        console.error(`Error adding note: ${error.message}`);
     }
-}
+};
+
 const getName= async (email) => {
     const data = await UserData.findOne({email:email});
     return data.username;

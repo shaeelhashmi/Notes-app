@@ -93,9 +93,15 @@ app.post("/register", (req, res) => {
   CreateUser(req.body.username,req.body.password,res);
 });
 app.get("/userdata",async (req,res)=>{
+  try{
   const data=await getUserNote(req.user.username);
   console.log(data);
   return res.status(200).json(data);
+  }
+  catch(e)
+  {
+    return res.status(500).json({message:"Error"})
+  }
 })
 app.listen(3000, async() => {
   await mongoose.connect(process.env.ConnectionPort)
