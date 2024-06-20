@@ -95,7 +95,11 @@ app.post("/register", (req, res) => {
 app.get("/userdata",async (req,res)=>{
   try{
   const data=await getUserNote(req.user.username);
-  console.log(data);
+  for( let i=0;i<data.length;i++)
+    {
+  for(let j=0;j<data[i].Notes.length;j++)
+    console.log(data[i].Notes[j])
+    }
   return res.status(200).json(data);
   }
   catch(e)

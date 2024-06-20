@@ -113,7 +113,7 @@ const AddGoogleUser = async (username, email) => {
             return;
         }
 
-        const categoryIndex = user.Notes.findIndex(cat => cat.category === category);
+        const categoryIndex = user.Notes.findIndex(cat => cat.category.toUpperCase() === category.toUpperCase());
         if (categoryIndex !== -1) {
             // Category exists, add the note to the existing category
             user.Notes[categoryIndex].Notes.push(newNote);
@@ -124,7 +124,6 @@ const AddGoogleUser = async (username, email) => {
                 Notes: [newNote]
             });
         }
-
         await user.save();
         console.log(`Note added to user ${username} in category ${category}.`);
     } catch (error) {
