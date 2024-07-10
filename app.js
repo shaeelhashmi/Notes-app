@@ -1,4 +1,4 @@
-import passport,{redirectLogin} from './passport.js';
+import passport,{redirectLogin,redirectHome} from './passport.js';
 import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
@@ -7,7 +7,6 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from "url";
 import CreateUser,{storage,AddNote,getUserNote} from './Mongoose.js';
 import mongoose from 'mongoose';
-import { get } from 'http';
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,9 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/",()=>{
-  console.log("object")
-}, (req, res) => {
+app.get("/",redirectHome, (req, res) => {
 return res.sendFile(path.join(__dirname, 'dist/index.html'))
 })
 app.post("/logout", (req, res) => {
@@ -67,7 +64,7 @@ app.get('/signup',redirectLogin, (req, res) => {
         });
     })(req, res, next)
 });
-app.post("/checklogin",(req,res)=>{
+app.get("/checklogin",(req,res)=>{
   try
   {
   if(!req.user&&!req.user.username)
@@ -95,19 +92,21 @@ app.post("/register", (req, res) => {
 app.get("/userdata",async (req,res)=>{
   try{
   const data=await getUserNote(req.user.username);
-  for( let i=0;i<data.length;i++)
-    {
-  for(let j=0;j<data[i].Notes.length;j++)
-    console.log(data[i].Notes[j])
-    }
   return res.status(200).json(data);
   }
   catch(e)
   {
-    return res.status(500).json({message:"Error"})
+    return res.status(500).json({message:"Internal server error"})
   }
 })
 app.listen(3000, async() => {
+  try
+  {
   await mongoose.connect(process.env.ConnectionPort)
 console.log('Server is running on port 3000')
+  }
+  catch(e)
+  {
+   console.log(err)
+  }
 });
