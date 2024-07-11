@@ -7,7 +7,7 @@ dotenv.config();
 const NoteSchema = new mongoose.Schema({
     title: String,
     content: String,
-    timeOfCompletion: Date
+    SubmissionDate: Date
 });
 const Category=new mongoose.Schema({
     category:
@@ -99,17 +99,16 @@ const AddGoogleUser = async (username, email) => {
         });
         await User.save();
     }
-};const AddNote = async (username, title, content, timeOfCompletion, category) => {
+};const AddNote = async (username, title, content, SubmissionDate, category) => {
     try {
         const newNote = {
             title: title,
             content: content,
-            timeOfCompletion: timeOfCompletion
+            SubmissionDate: SubmissionDate
         };
 
         const user = await UserData.findOne({ username: username });
         if (!user) {
-            console.log(`User with username ${username} not found.`);
             return;
         }
 

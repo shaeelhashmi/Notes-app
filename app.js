@@ -81,7 +81,7 @@ app.get("/checklogin",(req,res)=>{
 app.post("/addnote",(req,res)=>{
   console.log(req.body);
   const user=req.user;
-  const date=new Date(req.body.CompletionDate);
+  const date=new Date();
   AddNote(user.username,req.body.title,req.body.description,date,req.body.category)
   res.status(200).json({message:"Note added"})
 })
