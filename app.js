@@ -35,11 +35,23 @@ app.get("/notes/:id",redirectHome, (req, res) => {
 app.post("/notes",async(req,res)=>{
   try{
   const {id}=req.body;
-  console.log(req.user.username)
   const notes=await getUserNote(req.user.username);
-  console.log(notes,"fahdj")
-  const note=notes.filter((note)=>note._id==id);
-  console.log(note,"fahdj")
+  let note={}
+  for (let i=0;i<notes.length;i++)
+  {
+    for(let j=0;j<notes[i].Notes.length;j++)
+    {
+      if(notes[i].Notes[j]._id==id)
+      {
+        note=notes[i].Notes[j]
+        break;
+      }
+    }
+  }
+  console.log(note)
+  if(note.length==0){
+    return res.status(404).json({message:"Note not found"})
+  }
   return res.status(200).json(note);
   }catch(err)
   {
