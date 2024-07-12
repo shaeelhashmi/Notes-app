@@ -28,9 +28,28 @@ app.use(passport.session());
 app.get("/",redirectHome, (req, res) => {
 return res.sendFile(path.join(__dirname, 'dist/index.html'))
 })
+app.get("/notes/:id",redirectHome, (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist/index.html'))
+})
+//api for getting notes
+app.post("/notes",async(req,res)=>{
+  try{
+  const {id}=req.body;
+  console.log(req.user.username)
+  const notes=await getUserNote(req.user.username);
+  console.log(notes,"fahdj")
+  const note=notes.filter((note)=>note._id==id);
+  console.log(note,"fahdj")
+  return res.status(200).json(note);
+  }catch(err)
+  {
+    console.log(err)
+    return res.status(500).json({message:"Internal server error"})
+  }
+})
 app.post("/logout", (req, res) => {
 req.session.destroy();
-res.send("Logged out");
+res.json({message:"Logged out"});
 })
 app.get('/failure', (req, res) => {
 res.status(200).json("faailed to authenticate")
