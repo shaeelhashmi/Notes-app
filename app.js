@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import path from "path";
 import dotenv from 'dotenv';
 import { fileURLToPath } from "url";
-import CreateUser,{storage,AddNote,getUserNote} from './Mongoose.js';
+import CreateUser,{storage,AddNote,getUserNote,deleteNote} from './Mongoose.js';
 import mongoose from 'mongoose';
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
@@ -24,12 +24,37 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.get("/",redirectHome, (req, res) => {
+const getNote=(notes,id)=>{
+  for (let i=0;i<notes.length;i++)
+    {
+      for(let j=0;j<notes[i].Notes.length;j++)
+      {
+        if(notes[i].Notes[j]._id==id)
+        {
+          return notes[i].Notes[j]
+        }
+      }
+    }
+    return undefined;
+}
+app.get("/",redirectHome, async(req, res) => {
 return res.sendFile(path.join(__dirname, 'dist/index.html'))
 })
-app.get("/notes/:id",redirectHome, (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/index.html'))
+app.get("/notes/:id",redirectHome, async(req, res) => {
+  try{
+    const {id}=req.params;
+    const notes=await getUserNote(req.user.username);
+    let note={}
+    note=getNote(notes,id);
+    if(!note){
+      return res.status(404).json({message:"Note not found"})
+    }
+    res.sendFile(path.join(__dirname, 'dist/index.html'))
+    }catch(err)
+    {
+      return res.status(500).json({message:"Internal server error"})
+    }
+  
 })
 //api for getting notes
 app.post("/notes",async(req,res)=>{
@@ -37,19 +62,8 @@ app.post("/notes",async(req,res)=>{
   const {id}=req.body;
   const notes=await getUserNote(req.user.username);
   let note={}
-  for (let i=0;i<notes.length;i++)
-  {
-    for(let j=0;j<notes[i].Notes.length;j++)
-    {
-      if(notes[i].Notes[j]._id==id)
-      {
-        note=notes[i].Notes[j]
-        break;
-      }
-    }
-  }
-  console.log(note)
-  if(note.length==0){
+  note=getNote(notes,id);
+  if(!note){
     return res.status(404).json({message:"Note not found"})
   }
   return res.status(200).json(note);
@@ -59,6 +73,7 @@ app.post("/notes",async(req,res)=>{
     return res.status(500).json({message:"Internal server error"})
   }
 })
+app.delete("/DeleteNote",deleteNote)
 app.post("/logout", (req, res) => {
 req.session.destroy();
 res.json({message:"Logged out"});

@@ -138,5 +138,38 @@ const getUserNote=async (username)=>{
     const data=await UserData.findOne({username:username});
     return data.Notes;
 }
+const deleteNote=async(req,res)=>{
+    try{
+    const {id}=req.body;
+    const notes=await UserData.findOne({ username: req.user.username });
+    for (let i=0;i<notes.Notes.length;i++)
+      {
+        for(let j=0;j<notes.Notes[i].Notes.length;j++)
+        {
+            console.log(notes)
+          if(notes.Notes[i].Notes[j]._id==id)
+          {
+            console.log(notes)
+            notes.Notes[i].Notes.splice(j,1);    
+               break;
+          }
+        } 
+      }
+     for(let i=0;i<notes.Notes.length;i++)
+     {
+        if(notes.Notes[i].Notes.length==0)
+        {
+            notes.Notes.splice(i,1);
+        }
+     }
+  await notes.save();
+  res.status(200).json({message:"Note deleted successfully"});
+    }
+    catch(e)
+    {
+        res.status(505).json({message:"Internal server error"});
+    }
+
+}
 export default CreateUser;
-export { verify, AddGoogleUser, storage, getName,AddNote,getUserNote};
+export { verify, AddGoogleUser, storage, getName,AddNote,getUserNote,deleteNote};
