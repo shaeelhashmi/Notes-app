@@ -138,7 +138,7 @@ const getUserNote=async (username)=>{
     const data=await UserData.findOne({username:username});
     return data.Notes;
 }
-const deleteNote=async(req,res)=>{
+const deleteNote=async(req,res,next)=>{
     try{
     const {id}=req.body;
     const notes=await UserData.findOne({ username: req.user.username });
@@ -146,10 +146,8 @@ const deleteNote=async(req,res)=>{
       {
         for(let j=0;j<notes.Notes[i].Notes.length;j++)
         {
-            console.log(notes)
           if(notes.Notes[i].Notes[j]._id==id)
           {
-            console.log(notes)
             notes.Notes[i].Notes.splice(j,1);    
                break;
           }
@@ -163,13 +161,72 @@ const deleteNote=async(req,res)=>{
         }
      }
   await notes.save();
-  res.status(200).json({message:"Note deleted successfully"});
+  next();
     }
     catch(e)
     {
         res.status(505).json({message:"Internal server error"});
     }
-
+}
+const Update=async(req,res,next)=>{
+    try{
+    const {category,title,description,id}=req.body;
+    const notes=await UserData.findOne({ username: req.user.username });
+   if(!category)
+   {
+    for (let i=0;i<notes.Notes.length;i++)
+        {
+        for(let j=0;j<notes.Notes[i].Notes.length;j++)
+          {
+            if(notes.Notes[i].Notes[j]._id==id)
+            {
+                notes.Notes[i].Notes[j].SubmissionDate=new Date();
+              notes.Notes[i].Notes[j].title=title;
+              notes.Notes[i].Notes[j].content=description;
+              break;
+            }
+          }
+        }
+        await notes.save();
+        return res.status(200).json({message:"Note updated successfully"});
+   }
+   for (let i=0;i<notes.Notes.length;i++)
+    {
+    if(notes.Notes[i].category==category)
+    {
+        notes.Notes[i].Notes.push(
+            {
+            SubmissionDate:new Date(),
+            title:title,
+            content:description,
+            }
+        )
+        await notes.save();
+      deleteNote(req,res,next);
+      return res.status(200).json({message:"Note updated successfully"});
+    } 
+    }
+    notes.Notes.push(
+        {
+        category:category,
+        Notes:[
+            {
+            title:title,
+            content:description,
+            SubmissionDate:new Date(),
+            }
+        ]
+    }
+    )
+      await notes.save();
+      deleteNote(req,res,next);
+      return res.status(200).json({message:"Note updated successfully"});
+    }
+    catch(e)
+    {
+        console.log(e)
+        return res.status(505).json({message:"Internal server error"});
+    }
 }
 export default CreateUser;
-export { verify, AddGoogleUser, storage, getName,AddNote,getUserNote,deleteNote};
+export { verify, AddGoogleUser, storage, getName,AddNote,getUserNote,deleteNote,Update};

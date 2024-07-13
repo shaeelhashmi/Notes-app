@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import path from "path";
 import dotenv from 'dotenv';
 import { fileURLToPath } from "url";
-import CreateUser,{storage,AddNote,getUserNote,deleteNote} from './Mongoose.js';
+import CreateUser,{storage,AddNote,getUserNote,deleteNote,Update} from './Mongoose.js';
 import mongoose from 'mongoose';
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
@@ -73,7 +73,10 @@ app.post("/notes",async(req,res)=>{
     return res.status(500).json({message:"Internal server error"})
   }
 })
-app.delete("/DeleteNote",deleteNote)
+app.patch("/upadteNote",Update)
+app.delete("/DeleteNote",deleteNote,(req,res)=>{
+  res.status(200).json({message:"Note deleted"})
+})
 app.post("/logout", (req, res) => {
 req.session.destroy();
 res.json({message:"Logged out"});
