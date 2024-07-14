@@ -35,7 +35,6 @@ function redirectLogin(req, res, next) {
     async function(request, accessToken, refreshToken, profile, done) {
     AddGoogleUser(profile.displayName,profile.email);
     const username=await getName(profile.email);
-    console.log({username:username})
     done(null, { username: username })
     }
     ));

@@ -264,5 +264,20 @@ const updatePassword=async(req,res)=>{
         return res.status(505).json({message:"Internal server error"});
     }   
 }
+const CheckUser=async(req,res)=>{
+    try{
+    const notes=await UserData.findOne({ username: req.user.username });
+    if(notes.password==null)
+    {
+        return res.json({message:true});
+    }
+    return res.json({message:false});
+}
+    catch(e)
+    {
+        return res.json({message:false});
+    }
+}
+
 export default CreateUser;
-export { verify, AddGoogleUser, storage, getName,AddNote,getUserNote,deleteNote,Update,updateName,updatePassword};
+export { verify, AddGoogleUser, storage, getName,AddNote,getUserNote,deleteNote,Update,updateName,updatePassword,CheckUser};
