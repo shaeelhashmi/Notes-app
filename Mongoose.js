@@ -278,6 +278,36 @@ const CheckUser=async(req,res)=>{
         return res.json({message:false});
     }
 }
+const DeleteUser=async(req,res)=>{
+    const {password,email}=req.body;
+    try
+    {
+    if(!password){
+        const notes=await UserData.findOne({ username: req.user.username });
+        if(notes.email===email){
+            
+            await UserData.deleteOne({ username: req.user.username })  
+            req.session.destroy();
+            return res.status(200).json({message:"User deleted successfully"});
+        }else{
+            return res.status(505).json({message:"Incorrect email"});
+        }
+    }else{
+        const notes=await UserData.findOne({ username: req.user.username });
+        if(await bcrypt.compare(password, notes.password))
+        {
 
+            await UserData.deleteOne({ username: req.user.username })   
+            req.session.destroy();  
+    return res.status(200).json({message:"User deleted successfully"});
+        }else
+        {
+            return res.status(505).json({message:"Incorrect password"});
+        }
+    }
+}catch(e){
+    return res.status(505).json({message:"Internal server error"});
+}
+}
 export default CreateUser;
-export { verify, AddGoogleUser, storage, getName,AddNote,getUserNote,deleteNote,Update,updateName,updatePassword,CheckUser};
+export { verify, AddGoogleUser, storage, getName,AddNote,getUserNote,deleteNote,Update,updateName,updatePassword,CheckUser,DeleteUser};
