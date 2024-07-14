@@ -228,5 +228,41 @@ const Update=async(req,res,next)=>{
         return res.status(505).json({message:"Internal server error"});
     }
 }
+const updateName=async(req,res)=>{
+    try{
+    const {username}=req.body;
+    if(await UserData.findOne({ username: username }))
+    {
+        return res.status(200).json({message:"Username already exists"});
+    }
+    const notes=await UserData.findOne({ username: req.user.username });
+    notes.username=username;
+    await notes.save();
+    req.user.username=username;
+    return res.status(200).json({message:"Username updated successfully"});
+    }catch(e)
+    {
+        return res.status(505).json({message:"Internal server error"});
+    }
+}
+const updatePassword=async(req,res)=>{
+    try{
+    const {password,oldpass}=req.body;
+    const notes=await UserData.findOne({ username: req.user.username });
+    console.log(notes.password,oldpass);
+    if(await bcrypt.compare(oldpass, notes.password))
+    {
+    const salt = await bcrypt.genSalt(10);
+    notes.password=await bcrypt.hash(password, salt);
+    await notes.save();
+    return res.status(200).json({message:"Password updated successfully"});
+    }else{
+        return res.status(200).json({message:"Incorrect password"});
+    }
+    }catch(e)
+    {
+        return res.status(505).json({message:"Internal server error"});
+    }   
+}
 export default CreateUser;
-export { verify, AddGoogleUser, storage, getName,AddNote,getUserNote,deleteNote,Update};
+export { verify, AddGoogleUser, storage, getName,AddNote,getUserNote,deleteNote,Update,updateName,updatePassword};
