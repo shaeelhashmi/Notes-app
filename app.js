@@ -80,7 +80,6 @@ app.post("/notes",async(req,res)=>{
   return res.status(200).json(note);
   }catch(err)
   {
-    console.log(err)
     return res.status(500).json({message:"Internal server error"})
   }
 })
@@ -90,7 +89,7 @@ app.patch("/updateusername",updateName)
 app.patch("/updatepassword",updatePassword)
 app.patch("/upadteNote",Update)
 app.delete("/DeleteNote",deleteNote,(req,res)=>{
-  res.status(200).json({message:"Note deleted"})
+res.status(200).json({message:"Note deleted"})
 })
 app.post("/logout", (req, res) => {
 req.session.destroy();
@@ -112,7 +111,6 @@ app.get('/signup',redirectLogin, (req, res) => {
   res.redirect('/');
   });
   app.post('/login', (req, res, next) => {
-    console.log(req.body);
     passport.authenticate('local', function (err, user, info) {
         if (err) {
             return next(err);
@@ -143,7 +141,6 @@ app.get("/checklogin",showHeader,(req,res)=>{
   }
 })
 app.post("/addnote",(req,res)=>{
-  console.log(req.body);
   const user=req.user;
   const date=new Date();
   AddNote(user.username,req.body.title,req.body.description,date,req.body.category)
@@ -174,6 +171,6 @@ console.log('Server is running on port 3000')
   }
   catch(e)
   {
-   console.log(err)
+  process.exit(1)
   }
 });

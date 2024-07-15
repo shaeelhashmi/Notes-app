@@ -88,7 +88,6 @@ const CreateUniqueName = async (username) => {
 const AddGoogleUser = async (username, email) => {
     username = username.split(" ").join("");
     username = username.toLowerCase();
-    console.log(username);
     const Email = await UserData.findOne({ email: email });
     if (!Email) {
         username = await CreateUniqueName(username);
@@ -124,7 +123,6 @@ const AddGoogleUser = async (username, email) => {
             });
         }
         await user.save();
-        console.log(`Note added to user ${username} in category ${category}.`);
     } catch (error) {
         console.error(`Error adding note: ${error.message}`);
     }
@@ -224,7 +222,6 @@ const Update=async(req,res,next)=>{
     }
     catch(e)
     {
-        console.log(e)
         return res.status(505).json({message:"Internal server error"});
     }
 }
@@ -249,7 +246,6 @@ const updatePassword=async(req,res)=>{
     try{
     const {password,oldpass}=req.body;
     const notes=await UserData.findOne({ username: req.user.username });
-    console.log(notes.password,oldpass);
     if(await bcrypt.compare(oldpass, notes.password))
     {
     const salt = await bcrypt.genSalt(10);
