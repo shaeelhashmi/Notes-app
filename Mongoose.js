@@ -309,5 +309,6 @@ const DeleteUser=async(req,res)=>{
     return res.status(505).json({message:"Internal server error"});
 }
 }
+
 export default CreateUser;
 export { verify, AddGoogleUser, storage, getName,AddNote,getUserNote,deleteNote,Update,updateName,updatePassword,CheckUser,DeleteUser};

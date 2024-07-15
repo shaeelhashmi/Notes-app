@@ -37,6 +37,14 @@ const getNote=(notes,id)=>{
     }
     return undefined;
 }
+const showHeader=async(req,res,next)=>{
+  const headers=req.headers['referer'];
+  if(!headers)
+  {
+      return res.sendFile(path.join(__dirname, 'dist/index.html'))    
+  }
+  next();
+}
 app.get("/",redirectHome, async(req, res) => {
 return res.sendFile(path.join(__dirname, 'dist/index.html'))
 })
@@ -120,7 +128,7 @@ app.get('/signup',redirectLogin, (req, res) => {
         });
     })(req, res, next)
 });
-app.get("/checklogin",(req,res)=>{
+app.get("/checklogin",showHeader,(req,res)=>{
   try
   {
   if(!req.user&&!req.user.username)
@@ -145,7 +153,7 @@ app.post("/addnote",(req,res)=>{
 app.post("/register", (req, res) => {
   CreateUser(req.body.username,req.body.password,res);
 });
-app.get("/userdata",async (req,res)=>{
+app.get("/userdata",showHeader,async (req,res)=>{
   try{
   const data=await getUserNote(req.user.username);
   return res.status(200).json(data);
