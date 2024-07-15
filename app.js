@@ -17,7 +17,7 @@ app.use(session({
 secret: process.env.Secret,
 resave: false,
 saveUninitialized: true,
-cookie: { secure: false,maxAge: 6000000},
+cookie: { secure: false,maxAge:  365 * 24 * 60 * 60 * 1000},
 store: storage
 }))
 app.use(bodyParser.json());
@@ -50,7 +50,7 @@ app.get("/notes/:id",redirectHome, async(req, res) => {
     let note={}
     note=getNote(notes,id);
     if(!note){
-      return res.status(404).json({message:"Note not found"})
+      return res.status(404).sendFile(path.join(__dirname, 'dist/index.html'))
     }
     res.sendFile(path.join(__dirname, 'dist/index.html'))
     }catch(err)
@@ -154,6 +154,9 @@ app.get("/userdata",async (req,res)=>{
   {
     return res.status(500).json({message:"Internal server error"})
   }
+})
+app.use ((req, res) => {
+  res.sendFile(path.join(__dirname, 'dist/index.html'))
 })
 app.listen(3000, async() => {
   try
