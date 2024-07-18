@@ -1,4 +1,3 @@
-# Notes App
 ## Overview:
 This app allows users to securely create, update, and delete notes. The authentication system is implemented using Google OAuth2, ensuring a seamless and secure login experience.
 ## Techstack:
