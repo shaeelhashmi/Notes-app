@@ -81,6 +81,9 @@ const CreateUniqueName = async (username) => {
         username = username + toString(i);
         data = await UserData.findOne({ username: username });
         i++;
+        if(username.length>20){
+            username.slice(1,20);
+        }
     }
     return username;
 };
