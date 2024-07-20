@@ -233,7 +233,7 @@ const updateName=async(req,res)=>{
     const {username}=req.body;
     if(await UserData.findOne({ username: username }))
     {
-        return res.status(200).json({message:"Username already exists"});
+        return res.status(505).json({message:"Username already exists"});
     }
     const notes=await UserData.findOne({ username: req.user.username });
     notes.username=username;
