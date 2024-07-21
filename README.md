@@ -33,13 +33,13 @@ cd Notes-app
 git clone https://github.com/shaeelhashmi/Notes-app-Frontend
 ```
 ### Setting up envirnment:
-Create a .env file and add the following things in it:
-API_ID="Your google API ID"
-API_SECRET="Your google API secret"
-CALLBACK_URL="CallBack_URL"
-PORT=The port you want to run the application on;
-ConnectionPort="Your DB connection string"
-Secret="Can be any random pattern of string"
+Create a .env file and add the following things in it:<br>
+* API_ID="Your google API ID"<br>
+* API_SECRET="Your google API secret"<br>
+* CALLBACK_URL="CallBack_URL"<br>
+* PORT=The port you want to run the application on;<br>
+* ConnectionPort="Your DB connection string"<br>
+* Secret="Can be any random pattern of string"<br>
 ### Execution:
 Once all the steps are completed,type the following command in your terminal:
 ```
