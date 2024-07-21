@@ -17,14 +17,14 @@ This app allows users to securely create, update, and delete notes. The authenti
 * You should have either set up a MongoDB Cloud database or have the MongoDB application installed and running locally.
 ### Installation:
 To run this project locally follow the following steps:
-* You can install the zip file of the project from [here](https://github.com/shaeelhashmi/Notes-app-Backend)
+* You can install the zip file of the project from [here](https://github.com/shaeelhashmi/Notes-app)
 * If you have Git installed, type the following command in your terminal:
 ```
-git clone https://github.com/shaeelhashmi/Notes-app-Backend
+git clone https://github.com/shaeelhashmi/Notes-app
 ```
 * Then run 
 ```
-cd Notes-app-Backend
+cd Notes-app
 ```
 * Once in the project directory run npm install to download the neccessary packages.
 * If you want to access the front-end code you can install the zip file [here](https://github.com/shaeelhashmi/Notes-app-Frontend)
