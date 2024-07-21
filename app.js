@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import CreateUser,{storage,AddNote,getUserNote,deleteNote,Update,updateName, updatePassword,CheckUser,DeleteUser} from './Mongoose.js';
 import mongoose from 'mongoose';
 dotenv.config();
+const PORT=process.env.PORT||3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
@@ -163,14 +164,15 @@ app.get("/userdata",showHeader,async (req,res)=>{
 app.use ((req, res) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'))
 })
-app.listen(3000, async() => {
+app.listen(PORT, async() => {
   try
   {
   await mongoose.connect(process.env.ConnectionPort)
-console.log('Server is running on port 3000')
+console.log(`Server is running on port ${PORT}`)
   }
   catch(e)
   {
+    console.log(e)
   process.exit(1)
   }
 });
