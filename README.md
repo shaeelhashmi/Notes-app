@@ -16,7 +16,7 @@ This app allows users to securely create, update, and delete notes. The authenti
 * Make sure you have node.js run time envirnment installed in your pc.
 * You should have either set up a MongoDB Cloud database or have the MongoDB application installed and running locally.
 ### Video Demonstration:
-Watch the video to see the website in action.Video link [here](https://www.linkedin.com/feed/update/urn:li:activity:7220762870437814272/)
+Watch the video to see the website in action.Video link [here]((https://youtu.be/WfFoKPgdr2Y))
 ### Installation:
 To run this project locally follow the following steps:
 * You can install the zip file of the project from [here](https://github.com/shaeelhashmi/Notes-app)
